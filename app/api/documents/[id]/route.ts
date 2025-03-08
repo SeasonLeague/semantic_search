@@ -2,15 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { connectToDatabase } from "@/lib/mongodb"
 
-type Params = {
-  params: {
-    id: string;
-  };
-};
-
+// Most minimal type approach
 export async function GET(
   request: NextRequest,
-  context: Params
+  context: any
 ): Promise<NextResponse> {
   try {
     const id = context.params.id
@@ -36,7 +31,7 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  context: Params
+  context: any
 ): Promise<NextResponse> {
   try {
     const id = context.params.id
