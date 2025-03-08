@@ -13,7 +13,7 @@ import { DocumentContext } from "@/lib/document-context"
 import { Badge } from "@/components/ui/badge"
 
 // URL of the FastAPI document parser service
-const PARSER_API_URL = "http://localhost:8000"
+const PARSER_API_URL = "https://backend-semantic-search.onrender.com"
 
 export function DocumentUpload() {
   const { addDocument } = useContext(DocumentContext)
