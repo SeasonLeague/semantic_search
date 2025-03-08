@@ -1,8 +1,8 @@
-// This file will now be replaced by a Python service
+
 
 export async function createEmbedding(text: string): Promise<number[]> {
   try {
-    // Call the Python embedding service
+  
     const response = await fetch("/api/python/embed", {
       method: "POST",
       headers: {

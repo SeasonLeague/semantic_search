@@ -19,10 +19,9 @@ export function SearchBar() {
   const suggestionsRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   
-  // Debounce the query to avoid excessive suggestion updates
+  
   const debouncedQuery = useDebounce(query, 200)
 
-  // Update suggestions when debounced query changes
   useEffect(() => {
     if (debouncedQuery.length < 2) {
       setSuggestions([])
@@ -32,11 +31,11 @@ export function SearchBar() {
     const searchSuggestions = getSuggestions(debouncedQuery)
     setSuggestions(searchSuggestions)
     
-    // Reset active suggestion index when suggestions change
+    
     setActiveSuggestionIndex(-1)
   }, [debouncedQuery, getSuggestions])
 
-  // Handle clicks outside suggestions
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
@@ -50,9 +49,9 @@ export function SearchBar() {
     }
   }, [])
   
-  // Handle keyboard navigation for suggestions
+  
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // If no suggestions are shown, don't handle navigation keys
+    
     if (!showSuggestions || suggestions.length === 0) return
     
     switch (e.key) {
@@ -69,7 +68,7 @@ export function SearchBar() {
         )
         break
       case 'Enter':
-        // If a suggestion is active, select it
+       
         if (activeSuggestionIndex >= 0) {
           e.preventDefault()
           handleSelectSuggestion(suggestions[activeSuggestionIndex].text)
@@ -89,10 +88,10 @@ export function SearchBar() {
     setIsSearching(true)
     setShowSuggestions(false)
 
-    // Add to search history
+    
     addSearchQuery(query)
 
-    // Perform search
+   
     setTimeout(() => {
       const { results: searchResults } = searchDocuments(query)
       setResults(searchResults)
@@ -104,10 +103,10 @@ export function SearchBar() {
     setQuery(suggestion)
     setShowSuggestions(false)
     
-    // Search with the selected suggestion
+    
     setIsSearching(true)
     
-    // Add to search history
+    
     addSearchQuery(suggestion)
     
     setTimeout(() => {
@@ -133,7 +132,7 @@ export function SearchBar() {
     }
   }
   
-  // Get icon for suggestion type
+  
   const getSuggestionIcon = (type: string) => {
     switch (type) {
       case 'history':

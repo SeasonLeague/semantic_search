@@ -21,7 +21,6 @@ export function DocumentList() {
   const [selectedDocument, setSelectedDocument] = useState<any | null>(null)
 
   useEffect(() => {
-    // Simulate loading
     const timer = setTimeout(() => {
       setIsLoading(false)
     }, 800)

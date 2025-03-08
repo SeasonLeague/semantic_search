@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Search query is required" }, { status: 400 })
     }
 
-    // Call the Python search service
     const response = await fetch(`${request.nextUrl.origin}/api/python/search`, {
       method: "POST",
       headers: {
@@ -25,7 +24,6 @@ export async function GET(request: NextRequest) {
 
     const { results } = await response.json()
 
-    // Process results to add highlights
     const processedResults = results.map((result: any) => {
       const highlights = highlightMatches(result.content, query)
       return {

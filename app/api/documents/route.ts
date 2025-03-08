@@ -23,7 +23,6 @@ export async function POST(request: Request): Promise<Response> {
     const tagsJson = formData.get("tags") as string
     const tags = JSON.parse(tagsJson || "[]")
 
-    // Handle file upload if present
     const file = formData.get("file") as File | null
     let fileContent = ""
 
@@ -31,14 +30,12 @@ export async function POST(request: Request): Promise<Response> {
       fileContent = await file.text()
     }
 
-    // Use file content if available, otherwise use form content
     const documentContent = fileContent || content
 
     if (!title || !documentContent) {
       return NextResponse.json({ error: "Title and content are required" }, { status: 400 })
     }
 
-    // Generate embedding for the document content using NLTK
     const embedding = await createEmbedding(documentContent)
 
     const { db } = await connectToDatabase()

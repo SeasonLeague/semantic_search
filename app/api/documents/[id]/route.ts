@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { connectToDatabase } from "@/lib/mongodb"
 
-// Most minimal type approach
 export async function GET(
   request: NextRequest,
   context: any

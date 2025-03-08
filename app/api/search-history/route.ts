@@ -8,7 +8,6 @@ export async function GET(request: NextRequest) {
 
     const { db } = await connectToDatabase()
 
-    // Find search queries that start with the given prefix
     const suggestions = await db
       .collection("search_history")
       .find({
@@ -40,7 +39,6 @@ export async function POST(request: NextRequest) {
 
     const { db } = await connectToDatabase()
 
-    // Upsert the query in the search_history collection
     await db
       .collection("search_history")
       .updateOne(

@@ -1,14 +1,11 @@
-// Function to highlight matching parts of text for search results
 export function highlightMatches(text: string, query: string): string[] {
-  // Split query into words and phrases for matching
   const phrases: string[] = []
   const words: string[] = []
   
-  // Extract phrases in quotes
   const phraseMatches = query.match(/"([^"]+)"/g)
   if (phraseMatches) {
     phraseMatches.forEach(match => {
-      // Remove the quotes
+
       const phrase = match.slice(1, -1).trim()
       if (phrase.length > 0) {
         phrases.push(phrase)
@@ -16,7 +13,7 @@ export function highlightMatches(text: string, query: string): string[] {
     })
   }
   
-  // Get remaining words after removing phrases
+
   const remainingText = query.replace(/"([^"]+)"/g, '').trim()
   const wordMatches = remainingText
     .toLowerCase()
@@ -29,25 +26,25 @@ export function highlightMatches(text: string, query: string): string[] {
     return [text.substring(0, 200) + "..."] // Return first 200 chars if no valid query words
   }
   
-  // Find paragraphs or sentences that contain query words or phrases
+
   const paragraphs = text.split(/\n+/)
   const matches: string[] = []
   
-  // Look for matches in each paragraph
+
   for (const paragraph of paragraphs) {
     const paragraphLower = paragraph.toLowerCase()
     
-    // Check if paragraph contains any query word or phrase
+
     const hasWordMatch = words.some(word => paragraphLower.includes(word))
     const hasPhraseMatch = phrases.some(phrase => 
       paragraphLower.includes(phrase.toLowerCase())
     )
     
     if (hasWordMatch || hasPhraseMatch) {
-      // Create highlighted version of the paragraph
+      
       let highlightedParagraph = paragraph
       
-      // Highlight each phrase first (to avoid word highlighting breaking phrases)
+     
       for (const phrase of phrases) {
         const phraseRegex = new RegExp(`(${escapeRegExp(phrase)})`, 'gi')
         highlightedParagraph = highlightedParagraph.replace(
@@ -56,9 +53,9 @@ export function highlightMatches(text: string, query: string): string[] {
         )
       }
       
-      // Highlight each word
+      
       for (const word of words) {
-        // Use word boundary to match whole words only
+        
         const wordRegex = new RegExp(`\\b(${escapeRegExp(word)})\\b`, 'gi')
         highlightedParagraph = highlightedParagraph.replace(
           wordRegex,
@@ -66,15 +63,15 @@ export function highlightMatches(text: string, query: string): string[] {
         )
       }
       
-      // Add to matches
+     
       matches.push(highlightedParagraph)
       
-      // Limit to 3 matching paragraphs
+      
       if (matches.length >= 3) break
     }
   }
   
-  // If no paragraph matches, try to find sentences with matches
+  
   if (matches.length === 0) {
     const sentences = text.split(/[.!?]+/)
     
@@ -84,17 +81,17 @@ export function highlightMatches(text: string, query: string): string[] {
       
       const sentenceLower = trimmedSentence.toLowerCase()
       
-      // Check if sentence contains any query word or phrase
+      
       const hasWordMatch = words.some(word => sentenceLower.includes(word))
       const hasPhraseMatch = phrases.some(phrase => 
         sentenceLower.includes(phrase.toLowerCase())
       )
       
       if (hasWordMatch || hasPhraseMatch) {
-        // Create highlighted version of the sentence
+       
         let highlightedSentence = trimmedSentence
         
-        // Highlight each phrase first
+        
         for (const phrase of phrases) {
           const phraseRegex = new RegExp(`(${escapeRegExp(phrase)})`, 'gi')
           highlightedSentence = highlightedSentence.replace(
@@ -103,7 +100,7 @@ export function highlightMatches(text: string, query: string): string[] {
           )
         }
         
-        // Highlight each word
+        
         for (const word of words) {
           const wordRegex = new RegExp(`\\b(${escapeRegExp(word)})\\b`, 'gi')
           highlightedSentence = highlightedSentence.replace(
@@ -112,16 +109,16 @@ export function highlightMatches(text: string, query: string): string[] {
           )
         }
         
-        // Add to matches
+        
         matches.push(highlightedSentence)
         
-        // Limit to 3 matching sentences
+        
         if (matches.length >= 3) break
       }
     }
   }
   
-  // If still no matches, find partial matches for words
+ 
   if (matches.length === 0 && words.length > 0) {
     const sentences = text.split(/[.!?]+/)
     
@@ -131,30 +128,30 @@ export function highlightMatches(text: string, query: string): string[] {
       
       const sentenceLower = trimmedSentence.toLowerCase()
       
-      // Check for partial word matches
+      
       const hasPartialMatch = words.some(word => {
-        // For short words (3-4 chars), require exact match
+       
         if (word.length <= 4) {
           return new RegExp(`\\b${escapeRegExp(word)}\\b`, 'i').test(sentenceLower)
         }
-        // For longer words, allow partial matches (at least 4 chars)
+        
         return new RegExp(escapeRegExp(word.substring(0, Math.min(4, word.length))), 'i').test(sentenceLower)
       })
       
       if (hasPartialMatch) {
         let highlightedSentence = trimmedSentence
         
-        // Highlight partial matches
+        
         for (const word of words) {
           if (word.length <= 4) {
-            // Exact match for short words
+            
             const wordRegex = new RegExp(`\\b(${escapeRegExp(word)})\\b`, 'gi')
             highlightedSentence = highlightedSentence.replace(
               wordRegex,
               '<span class="bg-yellow-200 dark:bg-yellow-900">$1</span>'
             )
           } else {
-            // Partial match for longer words (highlight the matching part)
+            
             const partialRegex = new RegExp(`(\\b\\w*${escapeRegExp(word.substring(0, Math.min(4, word.length)))}\\w*\\b)`, 'gi')
             highlightedSentence = highlightedSentence.replace(
               partialRegex,
@@ -169,7 +166,7 @@ export function highlightMatches(text: string, query: string): string[] {
     }
   }
   
-  // If still no matches, just return the first part of the text
+  
   if (matches.length === 0) {
     return [text.substring(0, 200) + "..."]
   }
@@ -177,12 +174,12 @@ export function highlightMatches(text: string, query: string): string[] {
   return matches
 }
 
-// Helper function to escape special characters in regex
+
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
-// Function to extract keywords from text for auto-suggestions
+
 export function extractKeywords(text: string, maxKeywords: number = 10): string[] {
   // Remove common punctuation and convert to lowercase
   const cleanText = text.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")

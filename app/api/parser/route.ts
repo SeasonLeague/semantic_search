@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "File is required" }, { status: 400 })
     }
 
-    // Create a temporary file to store the uploaded file
     const tempDir = path.join(process.cwd(), "temp")
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true })
@@ -22,15 +21,12 @@ export async function POST(request: NextRequest) {
     const fileExt = file.name.split(".").pop() || ""
     const tempFilePath = path.join(tempDir, `${uuidv4()}.${fileExt}`)
 
-    // Write the file to disk
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
     fs.writeFileSync(tempFilePath, buffer)
 
-    // Parse the document using our Python script
     const text = await runPythonParser(tempFilePath)
 
-    // Clean up
     try {
       fs.unlinkSync(tempFilePath)
     } catch (error) {

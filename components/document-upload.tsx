@@ -12,7 +12,6 @@ import { Progress } from "@/components/ui/progress"
 import { DocumentContext } from "@/lib/document-context"
 import { Badge } from "@/components/ui/badge"
 
-// URL of the FastAPI document parser service
 const PARSER_API_URL = process.env.NEXT_PUBLIC_PARSER_API_URL || "https://backend-semantic-search.onrender.com"
 
 export function DocumentUpload() {
@@ -50,14 +49,12 @@ export function DocumentUpload() {
     keywords: string[],
     phrases: string[]
   }> => {
-    // For text files, we can read them directly in the browser
     if (file.type === "text/plain" || file.name.endsWith('.txt')) {
       return new Promise((resolve) => {
         const reader = new FileReader()
         reader.onload = (event) => {
           if (event.target?.result) {
             const text = event.target.result as string
-            // Extract potential tags
             const suggestedTags = extractPotentialTags(text)
             resolve({ 
               text, 
@@ -78,7 +75,7 @@ export function DocumentUpload() {
       })
     }
     
-    // For all other file types, use the FastAPI parser service
+  
     try {
       setParsingStatus(`Sending ${file.name} to parser API...`)
       
@@ -113,7 +110,7 @@ export function DocumentUpload() {
     } catch (error) {
       console.error("Error parsing document:", error)
       
-      // Fallback to browser-based extraction for text files
+      
       if (file.type === "text/plain" || file.name.endsWith('.txt')) {
         setParsingStatus("Falling back to browser-based extraction...")
         return new Promise((resolve) => {
@@ -145,19 +142,19 @@ export function DocumentUpload() {
   }
 
   const generateSummary = (text: string): string => {
-    // If the text is too short, just return it
+    
     if (text.length < 200) return text
     
-    // Split into sentences and paragraphs
+    
     const paragraphs = text.split(/\n\s*\n/)
     const sentences = text.split(/[.!?]+\s+/)
     
-    // Extract the first paragraph if it's not too short
+    
     let summary = ""
     if (paragraphs[0] && paragraphs[0].length > 100) {
       summary = paragraphs[0]
     } else {
-      // Take the first few sentences up to ~500 characters
+      
       let currentLength = 0
       for (let i = 0; i < sentences.length && currentLength < 500; i++) {
         summary += sentences[i] + ". "
@@ -165,7 +162,7 @@ export function DocumentUpload() {
       }
     }
     
-    // Extract key phrases (simple approach - look for repeated terms)
+    
     const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g) || []
     const wordFrequency: Record<string, number> = {}
     
@@ -173,14 +170,14 @@ export function DocumentUpload() {
       wordFrequency[word] = (wordFrequency[word] || 0) + 1
     })
     
-    // Sort words by frequency
+    
     const topWords = Object.entries(wordFrequency)
       .filter(([_, count]) => count > 1) // Only words that appear more than once
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([word]) => word)
     
-    // Add key terms to summary if we found any
+    
     if (topWords.length > 0) {
       summary += `\n\nKey terms: ${topWords.join(', ')}`
     }
@@ -193,7 +190,7 @@ export function DocumentUpload() {
       const selectedFile = e.target.files[0]
       setFile(selectedFile)
 
-      // Auto-fill title from filename
+      
       const fileName = selectedFile.name.replace(/\.[^/.]+$/, "")
       if (!title) setTitle(fileName)
 
@@ -201,7 +198,7 @@ export function DocumentUpload() {
       setParsingStatus("Starting extraction...")
       
       try {
-        // Extract text from the file
+        
         const { 
           text: extractedText, 
           suggestedTags: extractedTags,
@@ -211,16 +208,16 @@ export function DocumentUpload() {
         
         setContent(extractedText)
         
-        // Generate a summary of the content
+        
         setParsingStatus("Generating summary...")
         const contentSummary = generateSummary(extractedText)
         setSummary(contentSummary)
         
-        // Set suggested tags if we have them
+        
         if (extractedTags.length > 0) {
           setSuggestedTags(extractedTags)
           
-          // If user hasn't added tags yet, auto-add the first 3
+          
           if (tags.length === 0) {
             setTags(extractedTags.slice(0, 3))
           }
@@ -239,13 +236,10 @@ export function DocumentUpload() {
   }
   
   const extractPotentialTags = (text: string): string[] => {
-    // This is a simple approach to extract potential tags
-    // In a real implementation, you'd use NLP techniques
     
-    // Look for capitalized phrases that might be topics
     const capitalizedPhrases = text.match(/\b[A-Z][a-z]+ (?:[A-Z][a-z]+ )*[A-Z][a-z]+\b/g) || []
     
-    // Look for words that appear frequently
+    
     const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g) || []
     const wordFrequency: Record<string, number> = {}
     
@@ -253,14 +247,14 @@ export function DocumentUpload() {
       wordFrequency[word] = (wordFrequency[word] || 0) + 1
     })
     
-    // Get top frequent words
+    
     const topWords = Object.entries(wordFrequency)
       .filter(([word, _]) => !['this', 'that', 'with', 'from', 'have', 'were'].includes(word))
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([word]) => word)
     
-    // Combine and deduplicate
+   
     const allPotentialTags = [...new Set([
       ...capitalizedPhrases.slice(0, 3),
       ...topWords
@@ -292,7 +286,7 @@ export function DocumentUpload() {
     setProgress(0)
     setStatus(null)
 
-    // Simulate upload progress
+    
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -303,12 +297,12 @@ export function DocumentUpload() {
       })
     }, 200)
 
-    // Add document to context after "upload" completes
+    
     setTimeout(() => {
       clearInterval(interval)
       setProgress(100)
       
-      // Add the document to our context
+     
       const newDocument = {
         _id: Date.now().toString(),
         title,
@@ -324,7 +318,7 @@ export function DocumentUpload() {
         message: "Document uploaded successfully!",
       })
 
-      // Reset form after a delay
+      
       setTimeout(() => {
         setTitle("")
         setContent("")

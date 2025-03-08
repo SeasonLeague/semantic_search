@@ -3,7 +3,6 @@
 import React, { createContext, useState, useEffect, useMemo } from "react"
 import { extractKeywords, extractPhrases } from "./text-processing"
 
-// Initial mock documents
 const INITIAL_DOCUMENTS = [
   {
     _id: "1",
@@ -11,7 +10,7 @@ const INITIAL_DOCUMENTS = [
     content:
       "Machine learning is a branch of artificial intelligence (AI) and computer science which focuses on the use of data and algorithms to imitate the way that humans learn, gradually improving its accuracy.",
     tags: ["AI", "ML", "Data Science"],
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), 
   },
   {
     _id: "2",
@@ -19,7 +18,7 @@ const INITIAL_DOCUMENTS = [
     content:
       "Neural networks are a series of algorithms that mimic the operations of a human brain to recognize relationships between vast amounts of data.",
     tags: ["AI", "Neural Networks", "Deep Learning"],
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), 
   },
   {
     _id: "3",
@@ -28,6 +27,14 @@ const INITIAL_DOCUMENTS = [
       "Natural language processing (NLP) is a subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language.",
     tags: ["NLP", "AI", "Linguistics"],
     createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+  },
+  {
+    _id: "4",
+    title: "Introduction to Deep Learning Techniques",
+    content:
+      "Deep Learning (DL) is a subfield of Machine Learning that focuses on the use of Artificial Neural Networks (ANNs) to analyze and intercept data. Inspired by the structure and function of the human brain. Deep Learning algorithms are designed to learn and improve on their own by automatically adjusting the connections between nodes or "Neurons" in the network.",
+    tags: ["Deep Learning", "DL", "ANNs"],
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ]
 
@@ -83,11 +90,11 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
   const [searchHistory, setSearchHistory] = useState<SearchHistory[]>([])
   const [isInitialized, setIsInitialized] = useState(false)
   
-  // Extract keywords, phrases, and tags from all documents
+  
   const contentKeywords = useMemo(() => {
     if (documents.length === 0) return []
     
-    // Combine all document content
+    
     const allContent = documents.map(doc => doc.content).join(" ")
     return extractKeywords(allContent, 50)
   }, [documents])
@@ -95,7 +102,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
   const contentPhrases = useMemo(() => {
     if (documents.length === 0) return []
     
-    // Combine all document content
+   
     const allContent = documents.map(doc => doc.content).join(" ")
     return extractPhrases(allContent, 20)
   }, [documents])
@@ -103,7 +110,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
   const allTags = useMemo(() => {
     if (documents.length === 0) return []
     
-    // Get unique tags from all documents
+    
     const tagSet = new Set<string>()
     documents.forEach(doc => {
       doc.tags.forEach(tag => tagSet.add(tag.toLowerCase()))
@@ -112,11 +119,11 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
     return Array.from(tagSet)
   }, [documents])
 
-  // Load documents and search history from localStorage on initial render
+  
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        // Load documents
+        
         const savedDocuments = localStorage.getItem('semantic_search_documents')
         if (savedDocuments) {
           setDocuments(JSON.parse(savedDocuments))
@@ -124,7 +131,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
           setDocuments(INITIAL_DOCUMENTS)
         }
         
-        // Load search history
+        
         const savedHistory = localStorage.getItem('semantic_search_history')
         if (savedHistory) {
           setSearchHistory(JSON.parse(savedHistory))
@@ -139,14 +146,14 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  // Save documents to localStorage whenever they change
+  
   useEffect(() => {
     if (isInitialized && typeof window !== 'undefined') {
       localStorage.setItem('semantic_search_documents', JSON.stringify(documents))
     }
   }, [documents, isInitialized])
 
-  // Save search history to localStorage whenever it changes
+  
   useEffect(() => {
     if (isInitialized && typeof window !== 'undefined') {
       localStorage.setItem('semantic_search_history', JSON.stringify(searchHistory))
@@ -166,12 +173,12 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
       return { results: [], query }
     }
 
-    // Extract phrases in quotes
+    
     const phrases: string[] = []
     const phraseMatches = query.match(/"([^"]+)"/g)
     if (phraseMatches) {
       phraseMatches.forEach(match => {
-        // Remove the quotes
+        
         const phrase = match.slice(1, -1).trim()
         if (phrase.length > 0) {
           phrases.push(phrase)
@@ -179,13 +186,13 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
       })
     }
     
-    // Get remaining words after removing phrases
+    
     const remainingText = query.replace(/"([^"]+)"/g, '').trim()
     const queryTerms = remainingText.toLowerCase().split(/\s+/)
     
     const results = documents
       .map(doc => {
-        // Calculate a simple relevance score
+       
         const titleMatches = queryTerms.filter(term => 
           doc.title.toLowerCase().includes(term)
         ).length
@@ -198,13 +205,13 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
           doc.tags.some(tag => tag.toLowerCase().includes(term))
         ).length
         
-        // Check for phrase matches (higher weight)
+        
         const phraseMatches = phrases.filter(phrase => 
           doc.content.toLowerCase().includes(phrase.toLowerCase()) || 
           doc.title.toLowerCase().includes(phrase.toLowerCase())
         ).length * 2 // Double weight for phrases
         
-        // Weight title and tag matches more heavily
+        
         const score = (
           titleMatches * 3 + 
           contentMatches + 
@@ -212,10 +219,10 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
           phraseMatches * 3
         ) / ((queryTerms.length + phrases.length) * 6)
         
-        // Generate highlights
+        
         const highlights: string[] = []
         
-        // Find sentences containing query terms
+        
         const sentences = doc.content.split(/[.!?]+/)
         for (const sentence of sentences) {
           const trimmedSentence = sentence.trim()
@@ -230,7 +237,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
           if (hasTermMatch || hasPhraseMatch) {
             let highlightedSentence = trimmedSentence
             
-            // Highlight each phrase first
+            
             for (const phrase of phrases) {
               const phraseRegex = new RegExp(`(${escapeRegExp(phrase)})`, 'gi')
               highlightedSentence = highlightedSentence.replace(
@@ -239,7 +246,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
               )
             }
             
-            // Highlight each query term
+            
             for (const term of queryTerms) {
               if (term.length < 3) continue // Skip very short terms
               
@@ -272,11 +279,11 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
     if (!trimmedQuery) return
     
     setSearchHistory(prev => {
-      // Check if this query already exists
+     
       const existingIndex = prev.findIndex(item => item.query.toLowerCase() === trimmedQuery)
       
       if (existingIndex >= 0) {
-        // Update existing query
+       
         const updated = [...prev]
         updated[existingIndex] = {
           ...updated[existingIndex],
@@ -285,7 +292,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
         }
         return updated
       } else {
-        // Add new query
+        
         return [
           {
             query: trimmedQuery,
@@ -293,7 +300,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
             lastSearched: new Date().toISOString()
           },
           ...prev
-        ].slice(0, 50) // Limit history to 50 items
+        ].slice(0, 50) 
       }
     })
   }
@@ -304,11 +311,11 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
     const lowerPrefix = prefix.toLowerCase()
     const suggestions: Suggestion[] = []
     
-    // 1. Add matching search history items
+   
     const historyMatches = searchHistory
       .filter(item => item.query.toLowerCase().includes(lowerPrefix))
       .sort((a, b) => b.count - a.count)
-      .slice(0, 3) // Limit to 3 history suggestions
+      .slice(0, 3) 
     
     suggestions.push(...historyMatches.map(item => ({
       text: item.query,
@@ -317,37 +324,37 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
       lastSearched: item.lastSearched
     })))
     
-    // 2. Add matching keywords from document content
+    
     const keywordMatches = contentKeywords
       .filter(keyword => keyword.includes(lowerPrefix))
-      .slice(0, 3) // Limit to 3 keyword suggestions
+      .slice(0, 3) 
     
     suggestions.push(...keywordMatches.map(keyword => ({
       text: keyword,
       type: 'keyword' as const
     })))
     
-    // 3. Add matching phrases
+    
     const phraseMatches = contentPhrases
       .filter(phrase => phrase.includes(lowerPrefix))
-      .slice(0, 2) // Limit to 2 phrase suggestions
+      .slice(0, 2) 
     
     suggestions.push(...phraseMatches.map(phrase => ({
       text: phrase,
       type: 'phrase' as const
     })))
     
-    // 4. Add matching tags
+    
     const tagMatches = allTags
       .filter(tag => tag.includes(lowerPrefix))
-      .slice(0, 2) // Limit to 2 tag suggestions
+      .slice(0, 2) 
     
     suggestions.push(...tagMatches.map(tag => ({
       text: tag,
       type: 'tag' as const
     })))
     
-    // Deduplicate and limit to 8 total suggestions
+    
     const uniqueSuggestions: Suggestion[] = []
     const seenTexts = new Set<string>()
     
@@ -380,7 +387,7 @@ export function DocumentProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Helper function to escape special characters in regex
+
 function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }

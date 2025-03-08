@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Text is required" }, { status: 400 })
     }
 
-    // Create a temporary file to store the text
     const tempDir = path.join(process.cwd(), "temp")
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true })
@@ -20,10 +19,8 @@ export async function POST(request: NextRequest) {
     const tempFile = path.join(tempDir, `text_${Date.now()}.txt`)
     fs.writeFileSync(tempFile, text)
 
-    // Run the Python script to generate embeddings
     const embedding = await runPythonScript(tempFile)
 
-    // Clean up the temporary file
     fs.unlinkSync(tempFile)
 
     return NextResponse.json({ embedding })

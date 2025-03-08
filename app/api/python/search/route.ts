@@ -12,7 +12,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Search query is required" }, { status: 400 })
     }
 
-    // Get all documents from MongoDB
     const { db } = await connectToDatabase()
     const documents = await db
       .collection("documents")
@@ -20,7 +19,6 @@ export async function POST(request: NextRequest) {
       .project({ _id: 1, title: 1, content: 1, tags: 1 })
       .toArray()
 
-    // Create a temporary file to store the documents and query
     const tempDir = path.join(process.cwd(), "temp")
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true })
@@ -35,10 +33,8 @@ export async function POST(request: NextRequest) {
       }),
     )
 
-    // Run the Python script to perform the search
     const searchResults = await runPythonScript(tempFile)
 
-    // Clean up the temporary file
     fs.unlinkSync(tempFile)
 
     return NextResponse.json({ results: searchResults })
