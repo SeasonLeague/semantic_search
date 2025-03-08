@@ -1,8 +1,11 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { connectToDatabase } from "@/lib/mongodb"
 
-export async function GET(request: Request, { params }: { params: { id: string } }): Promise<Response> {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   try {
     const id = params.id
 
@@ -25,7 +28,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }): Promise<Response> {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   try {
     const id = params.id
 
@@ -47,4 +53,3 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     return NextResponse.json({ error: "Failed to delete document" }, { status: 500 })
   }
 }
-
