@@ -32,7 +32,7 @@ const INITIAL_DOCUMENTS = [
     _id: "4",
     title: "Introduction to Deep Learning Techniques",
     content:
-      "Deep Learning (DL) is a subfield of Machine Learning that focuses on the use of Artificial Neural Networks (ANNs) to analyze and intercept data. Inspired by the structure and function of the human brain. Deep Learning algorithms are designed to learn and improve on their own by automatically adjusting the connections between nodes or "Neurons" in the network.",
+      "Deep Learning (DL) is a subfield of Machine Learning that focuses on the use of Artificial Neural Networks (ANNs) to analyze and intercept data. Inspired by the structure and function of the human brain. Deep Learning algorithms are designed to learn and improve on their own by automatically adjusting the connections between nodes or Neurons in the network.",
     tags: ["Deep Learning", "DL", "ANNs"],
     createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
   },
