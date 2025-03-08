@@ -1,0 +1,25 @@
+The aim of this project is to analyze and model the time series data of a selected stock market index and to build an ARIMA (Autoregressive Integrated Moving Average) model to make future predictions.
+
+1. Formalize the problem
+ - What data do i need
+ - What tools do i need 
+ - How will i approach/solve the problem 
+	- The methodology, 
+	- data preprocessing techniques,
+	- model selection, 
+	- and evaluation metrics employed to construct the ARIMA model
+ - How will I test/confirm my result 
+ - Literature 
+
+2. Write things down in form of an introduction 
+3. Introduction = A more detailed proposal
+
+
+
+
+
+
+
+
+
+
