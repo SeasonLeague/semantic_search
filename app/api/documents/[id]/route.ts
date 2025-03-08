@@ -2,12 +2,18 @@ import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { connectToDatabase } from "@/lib/mongodb"
 
+type Params = {
+  params: {
+    id: string;
+  };
+};
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: Params
 ): Promise<NextResponse> {
   try {
-    const id = params.id
+    const id = context.params.id
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: "Invalid document ID" }, { status: 400 })
@@ -30,10 +36,10 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: Params
 ): Promise<NextResponse> {
   try {
-    const id = params.id
+    const id = context.params.id
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: "Invalid document ID" }, { status: 400 })
