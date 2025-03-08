@@ -26,7 +26,7 @@ const INITIAL_DOCUMENTS = [
     content:
       "Natural language processing (NLP) is a subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language.",
     tags: ["NLP", "AI", "Linguistics"],
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), 
   },
   {
     _id: "4",
