@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { connectToDatabase } from "@/lib/mongodb"
 import { createEmbedding } from "@/lib/embeddings"
 
-export async function GET() {
+export async function GET(request: Request): Promise<Response> {
   try {
     const { db } = await connectToDatabase()
 
@@ -14,8 +14,7 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to fetch documents" }, { status: 500 })
   }
 }
-
-export async function POST(request: NextRequest) {
+export async function POST(request: Request): Promise<Response> {
   try {
     const formData = await request.formData()
 
